@@ -50,32 +50,42 @@ window.onload = function() {
 
   // Unlock audio on first user interaction (legacy-safe)
   function unlockAudio() {
-    var previousVolume = alarmAudio.volume;
-    alarmAudio.volume = 0;
-    var playPromise = alarmAudio.play();
-    if (playPromise && playPromise.then) {
-      playPromise.then(function() {
-        alarmAudio.pause();
-        alarmAudio.currentTime = 0;
-        alarmAudio.volume = previousVolume;
-        document.removeEventListener('touchstart', unlockAudio);
-        document.removeEventListener('click', unlockAudio);
-      })["catch"](function() {
-        alarmAudio.volume = previousVolume;
-      });
-    }
+  var previousVolume = alarmAudio.volume;
+  alarmAudio.volume = 0; // Mute
+  var playPromise = alarmAudio.play();
+  if (playPromise && playPromise.then) {
+    playPromise.then(function() {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      alarmAudio.volume = previousVolume;
+      document.removeEventListener('touchstart', unlockAudio);
+      document.removeEventListener('click', unlockAudio);
+    })["catch"](function() {
+      alarmAudio.pause();
+      alarmAudio.currentTime = 0;
+      alarmAudio.volume = previousVolume;
+    });
+  } else {
+    // For browsers that don't return a promise
+    alarmAudio.pause();
+    alarmAudio.currentTime = 0;
+    alarmAudio.volume = previousVolume;
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
   }
+}
   document.addEventListener('touchstart', unlockAudio, false);
   document.addEventListener('click', unlockAudio, false);
 
   function playAlarmLoop() {
-    alarmAudio.currentTime = 0;
-    alarmAudio.play();
-  }
-  function stopAlarmLoop() {
-    alarmAudio.pause();
-    alarmAudio.currentTime = 0;
-  }
+  stopAlarmLoop(); // Ensure no overlapping alarms
+  alarmAudio.currentTime = 0;
+  alarmAudio.play();
+}
+function stopAlarmLoop() {
+  alarmAudio.pause();
+  alarmAudio.currentTime = 0;
+}
 
   // TIMER
   var timerInterval;
@@ -90,10 +100,11 @@ window.onload = function() {
   }
 
   function startTimer(alarmSeconds) {
-    clearInterval(timerInterval);
-    clearTimeout(alarmTimeout);
-    timerSeconds = 0;
-    updateTimerDisplay();
+  stopAlarmLoop(); // Stop any previous alarm
+  clearInterval(timerInterval);
+  clearTimeout(alarmTimeout);
+  timerSeconds = 0;
+  updateTimerDisplay();
 
     if (alarmSeconds) {
       alarmTimeout = setTimeout(function() {
@@ -125,6 +136,7 @@ window.onload = function() {
       stepDiv.textContent = "Proceso completo!";
       nextBtn.style.display = "none";
       clearInterval(timerInterval);
+      stopAlarmLoop();
     }
   }
 
