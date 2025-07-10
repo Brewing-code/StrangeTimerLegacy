@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Temporizador de cocción (Legacy)</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700" rel="stylesheet">
+  <!-- SweetAlert2 v7 for legacy support -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.min.css">
+</head>
+<body>
+  <h1>Temporizador de cocción</h1>
+  <div class="all">
+    <div class="main-panel">
+      <div id="step"></div>
+      <button id="nextBtn">Iniciar empaste</button>
+      <table id="resultsTable">
+        <thead>
+          <tr>
+            <th>Paso</th>
+            <th>Horario</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="timer-panel">
+      <span id="timer">00:00</span>
+    </div>
+  </div>
+  <button id="downloadBtn" class="tabla">Descargar tabla</button>
+  <script src="main.js"></script>
+</body>
+</html>
